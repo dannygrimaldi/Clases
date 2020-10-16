@@ -1,143 +1,289 @@
 //
 //  main.cpp
-//  Clases Ejercicio 1
 //
-//  Created by Daniel Hernández Grimaldi on 09/09/20.
-//  Copyright © 2020 Daniel Hernández Grimaldi. All rights reserved.
+//  Created by Daniel Alfredo Hernández Grimaldi on 10/10/2020.
+//  Copyright © 2020 Daniel Alfredo Hernández Grimaldi. All rights reserved.
 //
 
+
+ 
 #include <iostream>
-
+#include <stdlib.h>
 using namespace std;
-
-class cNodo{
-private:     // especificador acceso
-int data;                   //atributos
-cNodo* sig;
-
-public:    // especificador de acceso , tambien existen protected (herencia) private
-cNodo(int d, cNodo* s = NULL)/*sig(NULL)*/{   //constructor
-    data=d;
-    sig=s;
-   // sig = NULL;
-   // cout<<"Estado inicial: "<<endl;
-  //  imprimiNodo();  // imprimir el Estado inicial de mi objeto;
-
-}
-
-void setData(int d){
-
-if(d>=0)
-data=d;
-else
-    cout<<"ingresa otro numero con actitud positiva";
-}
-
-int getData(){          // interfaz de clase
-return data;
-}
-
-cNodo* getSig(){
-return sig;
-}
-
-void imprimiNodo()
-{
-cout<<"Nodo: "<<data<<endl;
-cout<<"sig: "<<sig<<endl;
-
-}
-
-cNodo(){       // contructor
-
-}
-
-friend class cListaLigada;
-friend int main();
+ 
+struct nodo{
+       int nro;        // en este caso es un numero entero
+       struct nodo *sgte;
 };
-
-
-class cListaLigada{
-
-cNodo * inicio;
-cNodo* ultimo;
-public:
-
-
-cListaLigada(){
-inicio=NULL;
-ultimo=NULL;
-}
-
-void agregarValor(int value)
+ 
+typedef struct nodo *Tlista;
+ 
+void insertarInicio(Tlista &lista, int valor)
 {
-
-if(inicio==NULL){
-
-    inicio=new cNodo(value);
-     ultimo=inicio;
+    Tlista q;
+    q = new(struct nodo);
+    q->nro = valor;
+    q->sgte = lista;
+    lista  = q;
 }
-else
+ 
+void insertarFinal(Tlista &lista, int valor)
 {
-
-ultimo->sig = new cNodo(value);
-ultimo= ultimo->sig;
+    Tlista t, q = new(struct nodo);
+ 
+    q->nro  = valor;
+    q->sgte = NULL;
+ 
+    if(lista==NULL)
+    {
+        lista = q;
+    }
+    else
+    {
+        t = lista;
+        while(t->sgte!=NULL)
+        {
+            t = t->sgte;
+        }
+        t->sgte = q;
+    }
+ 
 }
-
-
-}
-
-
-void imprimir(){
-cNodo * aux = inicio;
-
-
-while(aux!=NULL)
+ 
+int insertarAntesDespues()
 {
-cout<<"***"<<endl;
-aux->imprimiNodo();
-aux=aux->sig;
+    int _op, band;
+    cout<<endl;
+    cout<<"\t 1. Antes de la posicion           "<<endl;
+    cout<<"\t 2. Despues de la posicion         "<<endl;
+ 
+    cout<<"\n\t Opcion : "; cin>> _op;
+ 
+    if(_op==1)
+        band = -1;
+    else
+        band = 0;
+ 
+    return band;
 }
-
-
+ 
+void insertarElemento(Tlista &lista, int valor, int pos)
+{
+    Tlista q, t;
+    int i;
+    q = new(struct nodo);
+    q->nro = valor;
+ 
+    if(pos==1)
+    {
+        q->sgte = lista;
+        lista = q;
+    }
+    else
+    {
+        int x = insertarAntesDespues();
+        t = lista;
+ 
+        for(i=1; t!=NULL; i++)
+        {
+            if(i==pos+x)
+            {
+                q->sgte = t->sgte;
+                t->sgte = q;
+                return;
+            }
+            t = t->sgte;
+        }
+    }
+    cout<<"   Error...Posicion no encontrada..!"<<endl;
 }
-
-};
-
-class ProblemaQueRequiereUNED{
-int v;
-cListaLigada milista;
-public:
-void ingresarValorALista(){
-
- for(int i=0; i<10000; i++)
-   milista.agregarValor(i);
-   }
-
-
-void imprimirVariablesDelProblema(){
-cout<<v;
-milista.imprimir();
-
+ 
+void buscarElemento(Tlista lista, int valor)
+{
+    Tlista q = lista;
+    int i = 1, band = 0;
+ 
+    while(q!=NULL)
+    {
+        if(q->nro==valor)
+        {
+            cout<<endl<<" Encontrada en posicion "<< i <<endl;
+            band = 1;
+        }
+        q = q->sgte;
+        i++;
+    }
+ 
+    if(band==0)
+        cout<<"\n\n Numero no encontrado..!"<< endl;
 }
-
-};
-
-
+ 
+void reportarLista(Tlista lista)
+{
+     int i = 0;
+ 
+     while(lista != NULL)
+     {
+          cout <<' '<< i+1 <<") " << lista->nro << endl;
+          lista = lista->sgte;
+          i++;
+     }
+}
+ 
+ 
+void eliminarElemento(Tlista &lista, int valor)
+{
+    Tlista p, ant;
+    p = lista;
+ 
+    if(lista!=NULL)
+    {
+        while(p!=NULL)
+        {
+            if(p->nro==valor)
+            {
+                if(p==lista)
+                    lista = lista->sgte;
+                else
+                    ant->sgte = p->sgte;
+ 
+                delete(p);
+                return;
+            }
+            ant = p;
+            p = p->sgte;
+        }
+    }
+    else
+        cout<<" Lista vacia..!";
+}
+ 
+void eliminaRepetidos(Tlista &lista, int valor)
+{
+    Tlista q, ant;
+    q = lista;
+    ant = lista;
+ 
+    while(q!=NULL)
+    {
+        if(q->nro==valor)
+        {
+            if(q==lista) // primero elemento
+            {
+                lista = lista->sgte;
+                delete(q);
+                q = lista;
+            }
+            else
+            {
+                ant->sgte = q->sgte;
+                delete(q);
+                q = ant->sgte;
+            }
+        }
+        else
+        {
+            ant = q;
+            q = q->sgte;
+        }
+ 
+    }// fin del while
+   
+    cout<<"\n\n Valores eliminados..!"<<endl;
+}
+ 
+void menu1()
+{
+    cout<<"\n\t\tLISTA ENLAZADA SIMPLE\n\n";
+    cout<<" 1. INSERTAR AL INICIO               "<<endl;
+    cout<<" 2. INSERTAR AL FINAL                "<<endl;
+    cout<<" 3. INSERTAR EN UNA POSICION         "<<endl;
+    cout<<" 4. REPORTAR LISTA                   "<<endl;
+    cout<<" 5. BUSCAR ELEMENTO                  "<<endl;
+    cout<<" 6. ELIMINAR ELEMENTO 'V'            "<<endl;
+    cout<<" 7. ELIMINAR ELEMENTOS CON VALOR 'V' "<<endl;
+    cout<<" 8. SALIR                            "<<endl;
+ 
+    cout<<"\n INGRESE OPCION: ";
+}
+ 
+ 
+/*                        Funcion Principal
+---------------------------------------------------------------------*/
+ 
 int main()
 {
-   ProblemaQueRequiereUNED miproblema;
-
-   miproblema.ingresarValorALista();
-   miproblema.imprimirVariablesDelProblema();
-
-
-
-
-   //milista.crearNodosDePrueba();
-
-
-
-    return 0;
+    Tlista lista = NULL;
+    int op;     // opcion del menu
+    int _dato;  // elemenento a ingresar
+    int pos;    // posicion a insertar
+ 
+ 
+    system("color 0b");
+ 
+    do
+    {
+        menu1();  cin>> op;
+ 
+        switch(op)
+        {
+            case 1:
+ 
+                 cout<< "\n NUMERO A INSERTAR: "; cin>> _dato;
+                 insertarInicio(lista, _dato);
+            break;
+ 
+ 
+            case 2:
+ 
+                 cout<< "\n NUMERO A INSERTAR: "; cin>> _dato;
+                 insertarFinal(lista, _dato );
+            break;
+ 
+ 
+            case 3:
+ 
+                 cout<< "\n NUMERO A INSERTAR: ";cin>> _dato;
+                 cout<< " Posicion : ";       cin>> pos;
+                 insertarElemento(lista, _dato, pos);
+            break;
+ 
+ 
+            case 4:
+ 
+                 cout << "\n\n MOSTRANDO LISTA\n\n";
+                 reportarLista(lista);
+            break;
+ 
+ 
+            case 5:
+ 
+                 cout<<"\n Valor a buscar: "; cin>> _dato;
+                 buscarElemento(lista, _dato);
+            break;
+ 
+            case 6:
+ 
+                cout<<"\n Valor a eliminar: "; cin>> _dato;
+ 
+                eliminarElemento(lista, _dato);
+            break;
+ 
+            case 7:
+ 
+                cout<<"\n Valor repetido a eliminar: "; cin>> _dato;
+ 
+                eliminaRepetidos(lista, _dato);
+            break;
+ 
+                    }
+ 
+        cout<<endl<<endl;
+        system("pause");  system("cls");
+ 
+    }while(op!=8);
+ 
+ 
+   system("pause");
+   return 0;
 }
-
