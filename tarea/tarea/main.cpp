@@ -235,7 +235,7 @@ void borrarElemento(int n);
 void cListaLigada::borrar(int pos)
 {
     cNodo* aux=inicio;
-    cNodo* aux1=aux->sig;
+    
     
     if(pos==0)
        {
@@ -243,7 +243,7 @@ void cListaLigada::borrar(int pos)
            inicio=aux->sig;
        }
     else
-    {
+    {   cNodo* aux1=aux->sig;
         int i=1;
      while(i<pos && aux1->sig!=NULL)
         {
@@ -270,42 +270,60 @@ void cListaLigada::borrar(int pos)
     cout<<"Lista despues de borrar posición: "<<pos<<endl;
     imprimir();
 }
+
+
+
+
 void cListaLigada::borrarElemento(int item)
 {
     cNodo* aux = inicio;
    
     
     
-    if(aux->getData()==item&&inicio==NULL){
-        inicio=nullptr;
+    if(aux->getData()==item){
+        inicio=NULL;
         inicio=aux->sig;
-        
-        
     }
+
+        
+    cNodo* aux1=aux->sig;
     
+while(aux->sig->getData()!=item && aux!=NULL) {
+           aux=aux->sig;
+   }
     
-    
-    else{
-        cNodo* aux1= aux->sig;
-    while(aux!=NULL){
-        /*cout<<"   aux : "<<aux<<" apunta a: "<<aux->sig<<endl;
-        */
-        if(item==aux->getData()&&aux1!=NULL){
-        //cout<<"IF           aux vale: "<<aux<<" apunta a: "<<aux->sig<<endl;
             aux1=aux->sig;
-            if(aux1!=NULL)
-         
-            *aux=*aux1;  //el contenido de aux alzo igual al contenido de aux1
-           else
-               aux=nullptr;
-            
-           /* cout<<"IF aux : "<<aux<<" apunta a: "<<aux->sig<<endl;
-            */
+        
+        if(aux1->sig!=NULL)
+        {   aux1=aux1->sig;
+            aux=aux->sig; //Avanzamos nuevamente
+            *aux = *aux1;
+     
         }
-        aux=aux->sig;
-     /*   aux=aux->sig;
-        aux1=aux1->sig;
-      */    }}
+        else{
+            //aux->sig=aux1;
+            aux->sig=nullptr;
+            
+        }
+        
+        
+        
+  /*  while(aux!=NULL){
+        aux1=aux->sig;
+        
+        if(aux->getData()==item)
+        {   if(aux1!=NULL)
+        { *aux=*aux1;
+        }
+        else
+            aux=nullptr;
+        }
+            
+        
+            
+       aux=aux->sig; */ //Parece más simple pero da muchos problemas
+    
+        
     cout<<"mi lista despues de borrar el elemento "<<item<<endl;
     imprimir();
     
@@ -355,13 +373,12 @@ cin>>v;
 // cout<<"la lista antes de insertar:"<<endl;
     milista.imprimir();
 
-   /* milista.insertar(1,2);
-    milista.insertar(1,3);
-    milista.insertar(7,5);
-   milista.insertar(11,6);
+  milista.insertar(2,2);
+    milista.insertar(-2,3);
+    milista.insertar(2,5);
+   milista.insertar(2,6);
     cout<<"la lista despues de insertar:"<<endl;
    milista.imprimir();
-*/
   // for(int i=0;i<v+10; i++)
   // if(milista.buscar(i)==true)
  //  cout<<i<<":"<<"se encontro el elemento"<<endl;
@@ -407,10 +424,10 @@ int main()
 {
    ProblemaQueRequiereUNED miproblema;
     miproblema.ingresarInputs();
-   //miproblema.borrarItem(0);
-    miproblema.borrarItem(0);//ya casi solo fata borrar el cero
-   //miproblema.repetidos();  //ya esta
-    //miproblema.borrarPos(2);// ya quedó
+  
+    miproblema.borrarItem(-2);//ya casi solo fata borrar el cero
+   miproblema.repetidos();  //ya esta
+    miproblema.borrarPos(0);// ya quedó
    //miproblema.imprimirVariablesDelProblema();
 
  //miproblema.utilizarFuncionInsertar();
